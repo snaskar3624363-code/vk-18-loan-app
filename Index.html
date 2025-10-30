@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VK18 Consulting Services - Loan Application System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .logo-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: #f8f9fa;
+            border-bottom: 3px solid #1e3a8a;
+        }
+        
+        .logo-header img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
+        .logo-header h1 {
+            color: #1e3a8a;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .logo-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .tab-container {
+            display: flex;
+            background: #f0f0f0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            background: #e0e0e0;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .view {
+            display: none;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .file-upload {
+            border: 2px dashed #ddd;
+            padding: 20px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: #1e3a8a;
+            background: #f8f9fa;
+        }
+        
+        .file-upload input {
+            display: none;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: #1e3a8a;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #152d6b;
+        }
+        
+        .btn-success {
+            background: #00cc66;
+            color: white;
+            padding: 8px 16px;
+            width: auto;
+            margin-right: 5px;
+        }
+        
+        .btn-danger {
+            background: #ff4444;
+            color: white;
+            padding: 8px 16px;
+            width: auto;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e3a8a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .applications-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .applications-table th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #ddd;
+            font-size: 14px;
+        }
+        
+        .applications-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            color: white;
+        }
+        
+        .status-pending {
+            background: #ffa500;
+        }
+        
+        .status-approved {
+            background: #00cc66;
+        }
+        
+        .status-rejected {
+            background: #ff4444;
+        }
+        
+        .admin-login {
+            max-width: 400px;
+            margin: 50px auto;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-bar select {
+            width: auto;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .applications-table {
+                font-size: 12px;
+            }
+            
+            .applications-table th,
+            .applications-table td {
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-header">
+            <img src="https://media.licdn.com/dms/image/v2/D4D0BAQEnP79vEo2ttw/company-logo_200_200/company-logo_200_200/0/1729775832684/vk18_consulting_services_private_limited_logo?e=2147483647&v=beta&t=kPOx5w8vElbpJLZbGcOW4JLW7x1lPhwb47hM7_FHfQQ" alt="VK18 Logo">
+            <h1>VK18 Consulting Services</h1>
+            <p>Loan Application Management System</p>
+        </div>
+        
+        <div class="tab-container">
+            <button class="tab active" onclick="showTab('application')">Apply for Loan</button>
+            <button class="tab" onclick="showTab('admin')">Admin Dashboard</button>
+        </div>
+        
+        <div class="content">
+            <!-- Customer Application Form -->
+            <div id="application-view" class="view active">
+                <h2 style="color: #1e3a8a; margin-bottom: 20px;">Loan Application Form</h2>
+                
+                <div id="app-success" class="success-message"></div>
+                <div id="app-error" class="error-message"></div>
+                <div id="app-loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Submitting your application...</p>
+                </div>
+                
+                <form id="loan-form">
+                    <h3 style="color: #1e3a8a; margin-bottom: 15px;">Personal Information</h3>
+                    
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="full_name" required placeholder="e.g., Rajesh Kumar">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Phone Number (with country code) *</label>
+                        <input type="tel" id="phone" required placeholder="+918910101499">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="email" required placeholder="customer@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>PAN Number *</label>
+                        <input type="text" id="pan_number" required placeholder="ABCDE1234F" maxlength="10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Aadhar Number *</label>
+                        <input type="text" id="aadhar_number" required placeholder="1234 5678 9012">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Complete Address *</label>
+                        <textarea id="address" required placeholder="123 Main Street, Mumbai, Maharashtra 400001"></textarea>
+                    </div>
+                    
+                    <h3 style="color: #1e3a8a; margin: 25px 0 15px;">Loan Details</h3>
+                    
+                    <div class="form-group">
+                        <label>Loan Type *</label>
+                        <select id="loan_type" required>
+                            <option value="">Select loan type</option>
+                            <option value="Personal Loan">Personal Loan</option>
+                            <option value="Home Loan">Home Loan</option>
+                            <option value="Business Loan">Business Loan</option>
+                            <option value="Education Loan">Education Loan</option>
+                            <option value="Vehicle Loan">Vehicle Loan</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Loan Amount *</label>
+                        <input type="text" id="loan_amount" required placeholder="₹5,00,000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Monthly Income *</label>
+                        <input type="text" id="monthly_income" required placeholder="₹50,000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Employment Type *</label>
+                        <select id="employment_type" required>
+                            <option value="">Select employment type</option>
+                            <option value="Salaried">Salaried</option>
+                            <option value="Self-Employed">Self-Employed</option>
+                            <option value="Business Owner">Business Owner</option>
+                            <option value="Retired">Retired</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <h3 style="color: #1e3a8a; margin: 25px 0 15px;">Document Uploads</h3>
+                    <p style="color: #666; margin-bottom: 15px; font-size: 13px;">Upload all required documents (PDF or Image files)</p>
+                    
+                    <div class="form-group">
+                        <label>ID Proof *</label>
+                        <input type="file" id="id_proof" required accept="application/pdf,image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Income Proof *</label>
+                        <input type="file" id="income_proof" required accept="application/pdf,image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Bank Statement *</label>
+                        <input type="file" id="bank_statement" required accept="application/pdf">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Salary Slips *</label>
+                        <input type="file" id="salary_slips" required accept="application/pdf,image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Income Tax Returns *</label>
+                        <input type="file" id="income_tax_file" required accept="application/pdf">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </form>
+            </div>
+            
+            <!-- Admin Dashboard -->
+            <div id="admin-view" class="view">
+                <div id="admin-login-form" class="admin-login">
+                    <h2 style="color: #1e3a8a; margin-bottom: 20px; text-align: center;">Admin Login</h2>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="admin-password" placeholder="Enter admin password">
+                    </div>
+                    <button onclick="adminLogin()" class="btn btn-primary">Login</button>
+                    <p style="text-align: center; margin-top: 10px; color: #999; font-size: 12px;">Default password: admin123</p>
+                </div>
+                
+                <div id="admin-dashboard" style="display: none;">
+                    <h2 style="color: #1e3a8a; margin-bottom: 20px;">Loan Applications</h2>
+                    
+                    <div id="admin-success" class="success-message"></div>
+                    <div id="admin-error" class="error-message"></div>
+                    <div id="admin-loading" class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading applications...</p>
+                    </div>
+                    
+                    <div class="filter-bar">
+                        <select id="filter-status" onchange="loadApplications()">
+                            <option value="all">All Applications</option>
+                            <option value="pending">Pending Only</option>
+                            <option value="approved">Approved Only</option>
+                            <option value="rejected">Rejected Only</option>
+                        </select>
+                        <button onclick="loadApplications()" class="btn btn-primary" style="width: auto; padding: 10px 20px;">Refresh</button>
+                    </div>
+                    
+                    <div id="applications-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const API_KEY = 'cwk-31055faec1815a6c2bbef819f08b960e22039b2b4b98d6fff12ef9f46d238ab4';
+        const CUSTOMER_SERVICE = 'vk18_loan_application_system_4a61ee1f';
+        const ADMIN_SERVICE = 'vk18_loan_admin_dashboard_c996e65b';
+        const API_BASE = 'https://runtime.codewords.ai';
+        
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-view').classList.add('active');
+            
+            if (tabName === 'admin' && document.getElementById('admin-dashboard').style.display === 'block') {
+                loadApplications();
+            }
+        }
+        
+        // Admin login
+        function adminLogin() {
+            const password = document.getElementById('admin-password').value;
+            if (password === 'admin123' || password === 'vk18admin') {
+                document.getElementById('admin-login-form').style.display = 'none';
+                document.getElementById('admin-dashboard').style.display = 'block';
+                loadApplications();
+            } else {
+                alert('Incorrect password. Try: admin123');
+            }
+        }
+        
+        // File upload to CodeWords
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const response = await fetch(`${API_BASE}/upload`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                body: formData
+            });
+            
+            if (!response.ok) throw new Error('File upload failed');
+            const data = await response.json();
+            return data.file_url;
+        }
+        
+        // Submit loan application
+        document.getElementById('loan-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const submitBtn = form.querySelector('.btn-primary');
+            const loading = document.getElementById('app-loading');
+            const success = document.getElementById('app-success');
+            const error = document.getElementById('app-error');
+            
+            // Hide messages
+            success.style.display = 'none';
+            error.style.display = 'none';
+            
+            // Show loading
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            try {
+                // Upload all documents
+                const idProofUrl = await uploadFile(document.getElementById('id_proof').files[0]);
+                const incomeProofUrl = await uploadFile(document.getElementById('income_proof').files[0]);
+                const bankStatementUrl = await uploadFile(document.getElementById('bank_statement').files[0]);
+                const salarySlipsUrl = await uploadFile(document.getElementById('salary_slips').files[0]);
+                const incomeTaxUrl = await uploadFile(document.getElementById('income_tax_file').files[0]);
+                
+                // Prepare request
+                const requestData = {
+                    full_name: document.getElementById('full_name').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    pan_number: document.getElementById('pan_number').value.toUpperCase(),
+                    aadhar_number: document.getElementById('aadhar_number').value,
+                    address: document.getElementById('address').value,
+                    loan_type: document.getElementById('loan_type').value,
+                    loan_amount: document.getElementById('loan_amount').value,
+                    monthly_income: document.getElementById('monthly_income').value,
+                    employment_type: document.getElementById('employment_type').value,
+                    id_proof: idProofUrl,
+                    income_proof: incomeProofUrl,
+                    bank_statement: bankStatementUrl,
+                    salary_slips: salarySlipsUrl,
+                    income_tax_file: incomeTaxUrl
+                };
+                
+                // Submit application
+                const response = await fetch(`${API_BASE}/run/${CUSTOMER_SERVICE}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Application submission failed');
+                }
+                
+                const result = await response.json();
+                
+                // Show success
+                loading.style.display = 'none';
+                success.innerHTML = `
+                    <h3 style="color: #00cc66; margin-bottom: 10px;">✓ Application Submitted Successfully!</h3>
+                    <p><strong>Application ID:</strong> ${result.application_id}</p>
+                    <p style="margin-top: 10px;">${result.message}</p>
+                `;
+                success.style.display = 'block';
+                
+                // Reset form
+                form.reset();
+                
+            } catch (err) {
+                loading.style.display = 'none';
+                error.innerHTML = `<strong>Error:</strong> ${err.message}`;
+                error.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Load applications (admin)
+        async function loadApplications() {
+            const loading = document.getElementById('admin-loading');
+            const container = document.getElementById('applications-container');
+            const success = document.getElementById('admin-success');
+            const errorDiv = document.getElementById('admin-error');
+            const filter = document.getElementById('filter-status').value;
+            
+            success.style.display = 'none';
+            errorDiv.style.display = 'none';
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_BASE}/run/${ADMIN_SERVICE}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ filter_status: filter })
+                });
+                
+                if (!response.ok) throw new Error('Failed to load applications');
+                
+                const result = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (result.applications.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">No applications found.</p>';
+                    return;
+                }
+                
+                // Build table
+                let tableHTML = `
+                    <table class="applications-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Loan Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                result.applications.forEach(app => {
+                    const statusClass = `status-${app.status}`;
+                    tableHTML += `
+                        <tr>
+                            <td>${app.application_id}</td>
+                            <td>${app.full_name}</td>
+                            <td>${app.email}</td>
+                            <td>${app.loan_type}</td>
+                            <td>${app.loan_amount}</td>
+                            <td><span class="status-badge ${statusClass}">${app.status.toUpperCase()}</span></td>
+                            <td>
+                                <button class="btn btn-success" onclick="updateStatus('${app.application_id}', 'approved')">Approve</button>
+                                <button class="btn btn-danger" onclick="updateStatus('${app.application_id}', 'rejected')">Reject</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += '</tbody></table>';
+                container.innerHTML = tableHTML;
+                
+            } catch (err) {
+                loading.style.display = 'none';
+                errorDiv.innerHTML = `<strong>Error:</strong> ${err.message}`;
+                errorDiv.style.display = 'block';
+            }
+        }
+        
+        // Update application status
+        async function updateStatus(applicationId, newStatus) {
+            if (!confirm(`Are you sure you want to ${newStatus} this application?`)) return;
+            
+            const loading = document.getElementById('admin-loading');
+            const success = document.getElementById('admin-success');
+            const errorDiv = document.getElementById('admin-error');
+            
+            success.style.display = 'none';
+            errorDiv.style.display = 'none';
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_BASE}/run/${ADMIN_SERVICE}/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        application_id: applicationId,
+                        new_status: newStatus
+                    })
+                });
+                
+                if (!response.ok) throw new Error('Failed to update status');
+                
+                const result = await response.json();
+                
+                loading.style.display = 'none';
+                success.innerHTML = `<strong>Success:</strong> ${result.message}`;
+                success.style.display = 'block';
+                
+                // Reload applications
+                setTimeout(() => loadApplications(), 1000);
+                
+            } catch (err) {
+                loading.style.display = 'none';
+                errorDiv.innerHTML = `<strong>Error:</strong> ${err.message}`;
+                errorDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
